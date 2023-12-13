@@ -8,7 +8,7 @@
 #include <time.h>
 
 char Words[][16] =
-     {
+    {
 	"XYLOPHONE", "HOSPITAL", "SANDWICH", "ESCALATOR",
 	"SCULPTURE", "ELEPHANT", "YELLOWSTONE", "LANDSCAPE",
 	"QUARANTINE", "ASTEROID", "MOUNTAIN", "CHAMELEON",
@@ -20,6 +20,7 @@ char Words[][16] =
 	"LABORATORY", "BREAKFAST", "KANGAROO", "ICECREAM",
 	"RAINFOREST", "NOTEBOOK", "DINOSAUR", "WATERFALL"
     };
+
 int WelcomeScr()
 {
    int x,y,z;
@@ -51,10 +52,6 @@ int WelcomeScr()
         outtextxy(15, 370, "Invalid input! Please press 'S' or 'M'.");
         return 0; // Invalid input
     }
-  outtextxy(110,60,"HANGMAN GAME");
-   setlinestyle(DASHED_LINE, 2,3);
-    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
-
 }
 
 void Gamegfx()
@@ -62,10 +59,10 @@ void Gamegfx()
    int x,y,z;
    int i,j,xs,ys,State[100],xpos[100],ypos[100];
    setcolor(WHITE);
-   setlinestyle(SOLID_LINE, 5,10);
+   setlinestyle(DASHED_LINE, 5,10);
    line(0, 300, 650, 300);
    setcolor(DARKGRAY);
-   setlinestyle(SOLID_LINE, 2,8);
+   setlinestyle(DASHED_LINE, 2,8);
    line(0, 305, 650, 305);
 
      setcolor(WHITE);
@@ -168,7 +165,7 @@ void CapitalizeWord(char *word) {
         word[i] = Capitalizef(word[i]);
     }
 }
-void PlayGame(char* wordToGuess) {
+bool PlayGame(char* wordToGuess) {
      GAME:
     cleardevice();
     Gamegfx();
@@ -231,6 +228,8 @@ void PlayGame(char* wordToGuess) {
 	    outtextxy(300,160,"THE WORD WAS: ");
 	    setcolor(LIGHTRED);
 	    outtextxy(300,205,Words[r]);
+	    delay(2000);
+
 	    break;
 	}
 	for (i=0;i<Length;i++)
@@ -246,11 +245,11 @@ void PlayGame(char* wordToGuess) {
 	{
 	    printf("\nWarning: Letter already guessed!");
 	}
-    }
+    } return 0;
     //guessng loop
     if (Lives>0)
     {
-
+        setcolor(LIGHTRED);
         setcolor(WHITE);
 	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
         outtextxy(250,350,"You win!");
@@ -259,24 +258,10 @@ void PlayGame(char* wordToGuess) {
 	    outtextxy(300,160,"THE WORD WAS: ");
 	    setcolor(LIGHTRED);
 	    outtextxy(300,205,wordToGuess);
+	     return 1;
     }
-    getchar();
-    setcolor(WHITE);
-	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
-    outtextxy(180,400,"Try again? Y(es)/N(o)");
-    printf("\n");
-    scanf("%c",&Again);
-    while (Again != 'y' || Again != 'Y' || Again != 'n' || Again !='N')
-    {
-        if (Again=='y' || Again=='Y')
-        {
-        system("cls");
-        goto GAME;
-        }
-        else if (Again=='n' || Again == 'N')
-        exit(EXIT_SUCCESS);
-        else scanf("%c",&Again);
-    }
+
+
 }
 int main(void)
 {
@@ -288,27 +273,58 @@ int main(void)
     while (mode == 0) {
         mode = WelcomeScr();
     }
+    int level=1;
 if (mode == 1) {
         // Single-player mode
-        for (int round = 0; round < 5; ++round) {
+        while (level <= 5) {
+            printf("curent level %d\n ", level);
             int r = RandomIndex();
             strcpy(wordToGuess, Words[r]);
-            PlayGame(wordToGuess);
+            bool won = PlayGame(wordToGuess);
+            if (won) {
+                level++;
+                system("cls");
+            } else {
+                level = 1;
+}
+  setcolor(LIGHTRED);
+        setcolor(WHITE);
+	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
+        outtextxy(250,350,"You win!");
+        setcolor(WHITE);
+	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
+	    outtextxy(300,160,"THE WORD WAS: ");
+	    setcolor(LIGHTRED);
+	    outtextxy(300,205,wordToGuess);
+	    delay(2000);
+	    break;
         }
+
     } else if (mode == 2) {
         // Multiplayer mode
         char inputW[16];
         printf("Enter the word to guess: ");
         scanf("%15s", &inputW);
-        system("cls");
         CapitalizeWord(inputW);
         strcpy(wordToGuess, inputW);
-        PlayGame(inputW);
+         PlayGame(inputW);
+
+       setcolor(LIGHTRED);
+        setcolor(WHITE);
+	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
+        outtextxy(250,350,"You win!");
+        setcolor(WHITE);
+	    settextstyle(GOTHIC_FONT, HORIZ_DIR, 3);
+	    outtextxy(300,160,"THE WORD WAS: ");
+	    setcolor(LIGHTRED);
+	    outtextxy(300,205,wordToGuess);
+	    delay(2000);
+
     }
 
 
     cleardevice();
-    Gamegfx();
+
       closegraph();
     return 0;
 }
